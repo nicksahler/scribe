@@ -28,8 +28,7 @@ module.exports = {
     };
 
     var cr = function() {
-      if ( lastOut !== 10 )
-        out(10);
+      out(10);
     };
 
     var mode = 0;
@@ -100,7 +99,9 @@ module.exports = {
         // bitmap
         break;
       case 'Code':
-        out('\n' + node.literal + '\n');
+        out([29, 66, 1]);
+        out(node.literal);
+        out([29, 66, 0]);
         break;
       case 'Document':
         break;
@@ -113,21 +114,23 @@ module.exports = {
           }
         }
 
-        cr();
+        if (prev && (prev.type === 'Paragraph' ))
+          cr();
+
         if (entering)
-          out('\t');
+          ;// out('  ');
+        else
+          cr();
 
         break;
       case 'BlockQuote':
         indent((entering)?2:-2);
-        cr();
-        cr();
         break;
       case 'Item':
         // TODO: list types
         console.log(node.listType);
         if (entering)
-          out(8226);
+          out('-');
         else 
           cr();
         break;
@@ -135,11 +138,19 @@ module.exports = {
       case 'List':
         // tagname = node.listType === 'Bullet' ? 'ul' : 'ol';
         indent((entering)?2:-2);
-        cr();
         break;
       case 'Heading':
-        out([ ASCII_GS, 33, (entering)[0, 1, 1, 3](node.level) ]);     
-        cr();
+        // It only lets me do big or little text :|
+        if (entering) {
+          cr();
+          addMode(56);
+          out([27, 45, 1]);
+        } else {
+          out([27, 45, 0]);
+          removeMode(56);
+          cr();
+          cr();
+        }
         break;
       case 'CodeBlock':
         cr();
@@ -163,12 +174,14 @@ module.exports = {
         break;
       case 'ThematicBreak':
         cr();
+        out('-----------------------')
         cr();
         break;
       default:
         throw "Unknown node type " + node.type;
       }
 
+      prev = event.node;
     }
     if (options.time) { console.timeEnd("rendering"); }
     return buffer;
