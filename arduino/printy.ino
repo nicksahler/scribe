@@ -1,6 +1,6 @@
 #include "ada_print.h"
 #include "HttpClient.h"
-#include "ArduinoJson.h"
+/*#include "ArduinoJson.h"*/
 
 Adafruit_Thermal printer(&Serial1);
 
@@ -23,6 +23,10 @@ void setup() {
   printer.underlineOff();
   printer.feed(2);
   printer.setDefault();
+
+  uint8_t test[12] = { 10,9,27,33,8,104,105,33,27,33,0,10 };
+  for( int i = 0; i < 12; i++ )
+   printer.writeBytes(test[i]);
 
   Particle.function("notify", notify);
 }

@@ -173,7 +173,14 @@ class Adafruit_Thermal : public Print {
     wake();
   bool
     hasPaper();
-
+    void
+      writeBytes(uint8_t a),
+      writeBytes(uint8_t a, uint8_t b),
+      writeBytes(uint8_t a, uint8_t b, uint8_t c),
+      writeBytes(uint8_t a, uint8_t b, uint8_t c, uint8_t d),
+      setPrintMode(uint8_t mask),
+      unsetPrintMode(uint8_t mask),
+      writePrintMode();
  private:
 
   Stream
@@ -194,14 +201,6 @@ class Adafruit_Thermal : public Print {
     resumeTime,    // Wait until micros() exceeds this before sending byte
     dotPrintTime,  // Time to print a single dot line, in microseconds
     dotFeedTime;   // Time to feed a single dot line, in microseconds
-  void
-    writeBytes(uint8_t a),
-    writeBytes(uint8_t a, uint8_t b),
-    writeBytes(uint8_t a, uint8_t b, uint8_t c),
-    writeBytes(uint8_t a, uint8_t b, uint8_t c, uint8_t d),
-    setPrintMode(uint8_t mask),
-    unsetPrintMode(uint8_t mask),
-    writePrintMode();
 
 };
 
