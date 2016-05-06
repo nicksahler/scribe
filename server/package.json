@@ -9,6 +9,7 @@
   "author": "Nick Sahler",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.15.0",
     "commonmark": "^0.24.0",
     "express": "^4.13.3",
     "node-uuid": "^1.4.7",
