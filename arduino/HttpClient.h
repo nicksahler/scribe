@@ -1,19 +1,10 @@
-#ifndef __HTTP_CLIENT_H_
-#define __HTTP_CLIENT_H_
+#pragma once
 
 #include "application.h"
 #include "spark_wiring_string.h"
 #include "spark_wiring_tcpclient.h"
 #include "spark_wiring_usbserial.h"
-
-/**
- * Defines for the HTTP methods.
- */
-static const char* HTTP_METHOD_GET    = "GET";
-static const char* HTTP_METHOD_POST   = "POST";
-static const char* HTTP_METHOD_PUT    = "PUT";
-static const char* HTTP_METHOD_DELETE = "DELETE";
-static const char* HTTP_METHOD_PATCH = "PATCH";
+#include <vector>
 
 /**
  * This struct is used to pass additional HTTP headers such as API-keys.
@@ -29,7 +20,7 @@ typedef struct
  * HTTP Request struct.
  * hostname request host
  * path	 request path
- * port     request port
+ * port   request port
  * body	 request body
  */
 typedef struct
@@ -43,11 +34,6 @@ typedef struct
   String body;
 } http_request_t;
 
-/**
- * HTTP Response struct.
- * status  response status code.
- * body	response body
- */
 typedef struct
 {
   int status;
@@ -56,74 +42,15 @@ typedef struct
 
 class HttpClient {
 public:
-    /**
-    * Public references to variables.
-    */
-    TCPClient client;
-    char buffer[1024];
+  TCPClient client;
+  std::vector<char> buffer;
 
-    /**
-    * Constructor.
-    */
-    HttpClient(void);
+  HttpClient(void);
 
-    /**
-    * HTTP request methods.
-    * Can't use 'delete' as name since it's a C++ keyword.
-    */
-    void get(http_request_t &aRequest, http_response_t &aResponse)
-    {
-        request(aRequest, aResponse, (http_header_t*)NULL, HTTP_METHOD_GET);
-    }
-
-    void post(http_request_t &aRequest, http_response_t &aResponse)
-    {
-        request(aRequest, aResponse, (http_header_t*)NULL, HTTP_METHOD_POST);
-    }
-
-    void put(http_request_t &aRequest, http_response_t &aResponse)
-    {
-        request(aRequest, aResponse, (http_header_t*)NULL, HTTP_METHOD_PUT);
-    }
-
-    void del(http_request_t &aRequest, http_response_t &aResponse)
-    {
-        request(aRequest, aResponse, (http_header_t*)NULL, HTTP_METHOD_DELETE);
-    }
-
-    void get(http_request_t &aRequest, http_response_t &aResponse, http_header_t headers[])
-    {
-        request(aRequest, aResponse, headers, HTTP_METHOD_GET);
-    }
-
-    void post(http_request_t &aRequest, http_response_t &aResponse, http_header_t headers[])
-    {
-        request(aRequest, aResponse, headers, HTTP_METHOD_POST);
-    }
-
-    void put(http_request_t &aRequest, http_response_t &aResponse, http_header_t headers[])
-    {
-        request(aRequest, aResponse, headers, HTTP_METHOD_PUT);
-    }
-
-    void del(http_request_t &aRequest, http_response_t &aResponse, http_header_t headers[])
-    {
-        request(aRequest, aResponse, headers, HTTP_METHOD_DELETE);
-    }
-
-    void patch(http_request_t &aRequest, http_response_t &aResponse, http_header_t headers[])
-    {
-        request(aRequest, aResponse, headers, HTTP_METHOD_PATCH);
-    }
+  void request(http_request_t &req, http_response_t &res, http_header_t headers[] = (http_header_t*)NULL, const char* method = "GET");
 
 private:
-    /**
-    * Underlying HTTP methods.
-    */
-    void request(http_request_t &aRequest, http_response_t &aResponse, http_header_t headers[], const char* aHttpMethod);
-    void sendHeader(const char* aHeaderName, const char* aHeaderValue);
-    void sendHeader(const char* aHeaderName, const int aHeaderValue);
-    void sendHeader(const char* aHeaderName);
+  void sendHeader(const char* aHeaderName, const char* aHeaderValue);
+  void sendHeader(const char* aHeaderName, const int aHeaderValue);
+  void sendHeader(const char* aHeaderName);
 };
-
-#endif /* __HTTP_CLIENT_H_ */
